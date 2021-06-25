@@ -11,6 +11,10 @@ lang = os.getenv('DISCORD_BOT_LANG', default='ja')
 token = os.environ['DISCORD_BOT_TOKEN']
 client = commands.Bot(command_prefix=prefix)
 
+#↓追加変数
+tgtChId = ""
+
+
 @client.event
 async def on_ready():
     presence = f'{prefix}ヘルプ | 0/{len(client.guilds)}サーバー'
@@ -40,10 +44,19 @@ async def 切断(ctx):
         else:
             await ctx.voice_client.disconnect()
 
+            
 @client.event
 async def on_message(message):
     if message.content.startswith(prefix):
         pass
+ """
+ ここから追加↓
+ """
+    elif targetTxtChannel:
+        
+ """
+ ここまで追加↑
+ """
     else:
         if message.guild.voice_client:
             text = message.content
@@ -55,13 +68,13 @@ async def on_message(message):
                 user = await client.fetch_user(uid)
                 username = user.name + '、'
                 text = re.sub(pattern, username, text)
-            pattern = r'https://tenor.com/view/[\w/:%#\$&\?\(\)~\.=\+\-]+'
-            text = re.sub(pattern, '画像', text)
-            pattern = r'https://[\w/:%#\$&\?\(\)~\.=\+\-]+(\.jpg|\.jpeg|\.gif|\.png|\.bmp)'
-            text = re.sub(pattern, '、画像', text)
-            pattern = r'https://[\w/:%#\$&\?\(\)~\.=\+\-]+'
-            text = re.sub(pattern, '、URL', text)
-            text = message.author.name + '、' + text
+                pattern = r'https://tenor.com/view/[\w/:%#\$&\?\(\)~\.=\+\-]+'
+                text = re.sub(pattern, '画像', text)
+                pattern = r'https://[\w/:%#\$&\?\(\)~\.=\+\-]+(\.jpg|\.jpeg|\.gif|\.png|\.bmp)'
+                text = re.sub(pattern, '、画像', text)
+                pattern = r'https://[\w/:%#\$&\?\(\)~\.=\+\-]+'
+                text = re.sub(pattern, '、URL', text)
+                text = message.author.name + '、' + text
             if text[-1:] == 'w' or text[-1:] == 'W' or text[-1:] == 'ｗ' or text[-1:] == 'W':
                 while text[-2:-1] == 'w' or text[-2:-1] == 'W' or text[-2:-1] == 'ｗ' or text[-2:-1] == 'W':
                     text = text[:-1]
@@ -138,11 +151,18 @@ async def on_command_error(ctx, error):
     await ctx.send(error_msg)
 
 @client.command()
+async def addchannel(ctx):
+    ch = ctx.channel
+    tgtChId = ch.id
+    message = 'テキストチャンネルを【'+｛ ch.name ｝+'】に設定しました。'
+    ctx.send(message)
+    
+@client.command()
 async def ヘルプ(ctx):
     message = f'''◆◇◆{client.user.name}の使い方◆◇◆
-{prefix}＋コマンドで命令できます。
-{prefix}接続：ボイスチャンネルに接続します。
-{prefix}切断：ボイスチャンネルから切断します。'''
-    await ctx.send(message)
+　　{prefix}＋コマンドで命令できます。
+　　{prefix}接続：ボイスチャンネルに接続します。
+　　{prefix}切断：ボイスチャンネルから切断します。'''
+   ctx.send(message)
 
 client.run(token)
