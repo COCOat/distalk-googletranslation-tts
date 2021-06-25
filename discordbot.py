@@ -91,6 +91,9 @@ async def on_voice_state_update(member, before, after):
                 await asyncio.sleep(0.5)
                 await after.channel.connect()
             else:
+                pass
+ """
+ ここからコメントアウト↓
                 if member.guild.voice_client.channel is after.channel:
                     text = member.name + 'さんが入室しました'
                     s_quote = urllib.parse.quote(text)
@@ -98,6 +101,8 @@ async def on_voice_state_update(member, before, after):
                     while member.guild.voice_client.is_playing():
                         await asyncio.sleep(0.5)
                     member.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
+ ここまでコメントアウト↑
+ """
     elif after.channel is None:
         if member.id == client.user.id:
             presence = f'{prefix}ヘルプ | {len(client.voice_clients)}/{len(client.guilds)}サーバー'
@@ -108,12 +113,16 @@ async def on_voice_state_update(member, before, after):
                     await asyncio.sleep(0.5)
                     await member.guild.voice_client.disconnect()
                 else:
+"""
+ここからコメントアウト↓
                     text = member.name + 'さんが退室しました'
                     s_quote = urllib.parse.quote(text)
                     mp3url = f'http://translate.google.com/translate_tts?ie=UTF-8&q={s_quote}&tl={lang}&client=tw-ob'
                     while member.guild.voice_client.is_playing():
                         await asyncio.sleep(0.5)
                     member.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
+ ここまでコメントアウト↑
+ """
     elif before.channel != after.channel:
         if member.guild.voice_client.channel is before.channel:
             if len(member.guild.voice_client.channel.members) == 1 or member.voice.self_mute:
