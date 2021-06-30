@@ -20,7 +20,7 @@ channel = {} # テキストチャンネルID
 async def on_ready():
     presence = f'{prefix}ヘルプ | 0/{len(client.guilds)}サーバー'
     await client.change_presence(activity=discord.Game(name=presence))
-
+ """
 @client.command()
 async def 接続(ctx):
     if ctx.message.guild:
@@ -36,6 +36,7 @@ async def 接続(ctx):
                     await ctx.author.voice.channel.connect()
             else:
                 await ctx.author.voice.channel.connect()
+"""
 
 @client.command()
 async def 切断(ctx):
@@ -152,7 +153,7 @@ async def on_command_error(ctx, error):
     await ctx.send(error_msg)
 
 @client.command()
-async def addchannel(ctx):
+async def 接続(ctx):
     global voice
     global channel
     
@@ -165,7 +166,7 @@ async def addchannel(ctx):
     # サーバのプレフィックスを取得
     guild_deta = ctrl_db.get_guild(str(guild_id))
     if isinstance(guild_deta, type(None)):
-        prefix = '?'
+        prefix = '$'
     else:
         prefix = guild_deta.prefix
 
