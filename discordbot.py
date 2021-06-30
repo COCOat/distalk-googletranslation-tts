@@ -12,8 +12,9 @@ token = os.environ['DISCORD_BOT_TOKEN']
 client = commands.Bot(command_prefix=prefix)
 
 #↓追加変数
-tgtChId = ""
-
+# サーバ別に各値を保持
+voice = {} # ボイスチャンネルID
+channel = {} # テキストチャンネルID
 
 @client.event
 async def on_ready():
@@ -152,10 +153,41 @@ async def on_command_error(ctx, error):
 
 @client.command()
 async def addchannel(ctx):
-    ch = ctx.channel
-    tgtChId = ch.id
-    message = 'テキストチャンネルを【'+｛ ch.name ｝+'】に設定しました。'
-    ctx.send(message)
+    global voice
+    global channel
+    
+    guild_id = ctx.guild.id # サーバIDを取得
+    vo_ch = ctx.author.voice # 召喚した人が参加しているボイスチャンネルを取得
+    
+   　# サーバを登録
+    add_guild_db(ctx.guild)
+
+    # サーバのプレフィックスを取得
+    guild_deta = ctrl_db.get_guild(str(guild_id))
+    if isinstance(guild_deta, type(None)):
+        prefix = '?'
+    else:
+        prefix = guild_deta.prefix
+
+    # 召喚された時、voiceに情報が残っている場合
+    if guild_id in voice:
+        await voice[guild_id].disconnect()
+        del voice[guild_id] 
+        del channel[guild_id]
+
+    # 召喚した人がボイスチャンネルにいた場合
+    if not isinstance(vo_ch, type(None)): 
+        voice[guild_id] = await vo_ch.channel.connect()
+        channel[guild_id] = ctx.channel.id
+        noties = get_notify(ctx)
+        await ctx.channel.send('モロッコ参上🌽"{}help"コマンドで使い方を表示します。'.format(prefix))
+        for noty in noties:
+            await ctx.channel.send(noty)
+        if len(noties) != 0:
+            await ctx.channel.send('なにかあれば、ちいちゃん🌽にいうてね')
+    else :
+        await ctx.channel.send('ボイスチャンネルに接続してから呼び出してください🌽')
+        
     
 @client.command()
 async def ヘルプ(ctx):
